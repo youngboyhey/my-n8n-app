@@ -4,4 +4,5 @@
 [deploy]
   healthcheckPath = "/healthz"
   healthcheckTimeout = 60
-  restartPolicyType = "always"
+  restartPolicyType = "on-failure"
+  restartPolicyMaxRetries = 3
