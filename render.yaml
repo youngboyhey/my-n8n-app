@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: my-n8n-app
+    env: docker
+    dockerfilePath: ./Dockerfile.render
+    plan: free
+    region: singapore
+    envVars:
+      - key: N8N_BASIC_AUTH_ACTIVE
+        value: true
+      - key: NODE_ENV
+        value: production
