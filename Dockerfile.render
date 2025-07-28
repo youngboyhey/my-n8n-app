@@ -1,4 +1,17 @@
-FROM n8nio/n8n:latest
+FROM node:18-alpine
+
+# 安裝必要套件
+RUN apk add --no-cache \
+    su-exec \
+    tini \
+    tzdata
+
+# 全域安裝 n8n
+RUN npm install -g n8n
+
+# 創建 n8n 用戶和目錄
+RUN addgroup -g 1000 node && \
+    adduser -u 1000 -G node -s /bin/sh -D node
 
 # 設定環境變數
 ENV N8N_HOST=0.0.0.0
@@ -7,20 +20,17 @@ ENV N8N_PROTOCOL=https
 ENV NODE_ENV=production
 ENV N8N_BASIC_AUTH_ACTIVE=true
 
-# 確保工作目錄和權限正確
-USER root
-
-# 創建必要目錄並設定權限
+# 創建工作目錄
 RUN mkdir -p /home/node/.n8n && \
-    chown -R node:node /home/node && \
-    chmod -R 755 /home/node
+    chown -R node:node /home/node
 
-# 切換到 node 用戶
+# 切換用戶
 USER node
 WORKDIR /home/node
 
 # 開放端口
 EXPOSE 10000
 
-# 使用完整路徑啟動 n8n
-CMD ["/usr/local/bin/n8n", "start"]
+# 啟動命令
+ENTRYPOINT ["tini", "--"]
+CMD ["n8n", "start"]
