@@ -1,0 +1,23 @@
+FROM n8nio/n8n:latest
+
+# Render 專用配置 - 使用端口 10000
+ENV N8N_HOST=0.0.0.0
+ENV N8N_PORT=10000
+ENV N8N_PROTOCOL=https
+ENV NODE_ENV=production
+
+# 創建 n8n 資料目錄
+USER root
+RUN mkdir -p /home/node/.n8n && \
+    chown -R node:node /home/node/.n8n && \
+    chmod -R 755 /home/node/.n8n
+
+# 切換到 node 用戶
+USER node
+WORKDIR /home/node
+
+# 開放 Render 指定的端口
+EXPOSE 10000
+
+# 啟動 n8n
+CMD ["n8n", "start"]
